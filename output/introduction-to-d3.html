@@ -1,0 +1,107 @@
+
+<html>
+  <head>
+    <title>Introduction to d3.js</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" href="vendor/styles.css"/>
+    <link rel="stylesheet" href="assets/custom-styles.css"/>
+    <script src="http://localhost:35729/livereload.js"></script>
+    <script src="vendor/jquery.min.js"></script>
+    <script src="vendor/underscore.js"></script>
+    <script src="vendor/Backbone.js"></script>
+  </head>
+</html>
+<body>
+  <textarea id="source">class: center, middle
+
+# Introduction to d3.js
+
+---
+# Stuff d3.js is not good at!
+
+* Being a chart library
+* Being Backward compatibile
+* Rendering things for you
+* Abstracting basic graphic primitives
+
+???
+
+* D3 is *not* a chart library (there are no charts, but you can make some)
+* D3 doesn't play nice with browsers we don't like.
+* D3 doesn't actually care about how you render things (svg much? html time? canvas pants?)
+* D3 doesn't abstract rendering (no &quot;circle&quot; or &quot;rectangle&quot; api. You deal directly with your renderer yourself.)
+
+---
+
+# Stuff d3.js is good at!
+
+* Providing a way to map data to documents.
+* Being a general purpose visualization library
+* Handling data transformation
+* Providing basic math &amp; layout algorithms
+
+---
+
+# d3.js is a little like jQuery
+
+jQuery is a fast, small, and feature-rich JavaScript library. It makes things like HTML document traversal and manipulation, event handling, animation, and Ajax much simpler with an easy-to-use API that works across a multitude of browsers. With a combination of versatility and extensibility, jQuery has changed the way that millions of people write JavaScript.
+
+[http://jquery.com/](http://jquery.com/)
+
+---
+
+# d3.js &amp; jQuery: Selections
+
+Finding elements in the DOM:
+
+### d3:
+
+```javascript
+d3.select(&quot;#vis&quot;)
+```
+
+### jQuery:
+
+```javascript
+$(&quot;#vis&quot;)
+```
+
+---
+
+# d3.js &amp; jQuery: Styles
+
+Applying css styles to DOM elements:
+
+### d3:
+
+```javascript
+d3.select(&quot;#vis&quot;).style(&quot;font-size&quot;, &quot;12px&quot;);
+```
+
+### jQuery:
+
+```javascript
+$(&quot;#vis&quot;).css(&quot;font-size&quot;, &quot;12px&quot;);
+```
+
+# d3.js &amp; jQuery: Attributes
+
+Applying css styles to DOM elements:
+
+### d3:
+
+```javascript
+d3.select(&quot;#vis&quot;).attr(&quot;name&quot;, &quot;phonenumber&quot;);
+```
+
+### jQuery:
+
+```javascript
+$(&quot;#vis&quot;).attr(&quot;name&quot;, &quot;phonenumber&quot;);
+```
+
+</textarea>
+  <script src="vendor/remark.min.js" type="text/javascript"></script><script type="text/javascript">
+    var slideshow = remark.create();
+  </script>
+</body>

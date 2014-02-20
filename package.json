@@ -1,0 +1,16 @@
+{
+  "name": "roost-slides",
+  "description": "Roost slide materials",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bocoup/roost-slides.git"
+  },
+  "author": "Bocoup",
+  "devDependencies": {
+    "grunt": "~0.4.2",
+    "grunt-contrib-jade": "~0.9.1",
+    "grunt-contrib-copy": "~0.5.0",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.3"
+  }
+}
