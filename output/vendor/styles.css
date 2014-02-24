@@ -32,7 +32,7 @@ li p { line-height: 1.25em; }
 .red { color: #fa0000; }
 .large { font-size: 2em; }
 a, a > code {
-  color: rgb(249, 38, 114);
+  color: #6EB6E6;
   text-decoration: none;
 }
 code {
@@ -134,4 +134,17 @@ code {
 
 .center ul {
   list-style-type: none;
+}
+
+.remark-slide .remark-slide-content.paddingless {
+  padding: 0px;
+}
+
+.paddingless {
+  margin-top:20px;
+  margin-left: -50px;
+}
+
+.scrollable {
+  overflow-y: scroll;
 }

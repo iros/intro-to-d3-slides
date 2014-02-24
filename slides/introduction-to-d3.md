@@ -3,12 +3,15 @@ class: center, middle
 # Introduction to d3.js
 
 ---
+
+class:middle
 # Stuff d3.js is not good at!
 
 * Being a chart library
 * Being Backward compatibile
 * Rendering things for you
 * Abstracting basic graphic primitives
+
 
 ???
 
@@ -18,7 +21,7 @@ class: center, middle
 * D3 doesn't abstract rendering (no "circle" or "rectangle" api. You deal directly with your renderer yourself.)
 
 ---
-
+class:middle
 # Stuff d3.js is good at!
 
 * Providing a way to map data to documents.
@@ -28,11 +31,55 @@ class: center, middle
 
 ---
 
+class:center,middle
+# d3.js & jQuery
+
+---
+
 # d3.js is a little like jQuery
 
 jQuery is a fast, small, and feature-rich JavaScript library. It makes things like HTML document traversal and manipulation, event handling, animation, and Ajax much simpler with an easy-to-use API that works across a multitude of browsers. With a combination of versatility and extensibility, jQuery has changed the way that millions of people write JavaScript.
 
 [http://jquery.com/](http://jquery.com/)
+
+---
+
+# jQuery intro in 2 slides
+
+### DOM Traversal and Manipulation
+
+```javascript
+$( "button.continue" ).html( "Next Step..." )
+```
+
+### Event Handling:
+
+Show the #banner-message element that is hidden with  display:none in its CSS when any button in #button-container is clicked.
+
+```javascript
+var hiddenBox = $( "#banner-message" );
+$( "#button-container button" ).on( "click", function( event ) {
+  hiddenBox.show();
+});
+```
+---
+
+# jQuery intro in 2 slides
+
+### Remote Data with Ajax:
+Call a local script on the server /api/getWeather with the query parameter zipcode=97201 and replace the element #weather-temp's html with the returned text.
+
+```javascript
+$.ajax({
+  url: "/api/getWeather",
+  data: {
+    zipcode: 97201
+  },
+  success: function( data ) {
+    $( "#weather-temp" ).html( "<strong>" + data + "</strong> degrees" );
+  }
+});
+```
 
 ---
 
@@ -74,7 +121,7 @@ $("#vis").css("font-size", "12px");
 
 # d3.js & jQuery: Attributes
 
-Applying css styles to DOM elements:
+Setting attributes on DOM elements:
 
 ### d3:
 
@@ -97,19 +144,19 @@ Capturing user events:
 
 ```javascript
 d3.select("#vis")
-.on("mouseover", function(d) {
-  // 'this' is the element
-  // 'd' is the datum associated with it
-  // to act on this element with d3, we have to
-  // reselect it:
-  d3.select(this).classed("selected", true);
-});
+  .on("mouseover", function(d) {
+    // 'this' is the element
+    // 'd' is the datum associated with it
+    // to act on this element with d3, we have to
+    // reselect it:
+    d3.select(this).classed("selected", true);
+  });
 ```
 
 ### jQuery:
 ```javascript
 $('#vis').mouseover(function(ev) {
-    $(this).addClass("selected");
+    $(this).attr("class","selected");
 });
 ```
 
@@ -130,6 +177,75 @@ d3.json("data.json", function(err, data) {});
 ```javascript
 $.getJSON("data.json", function(data) {});
 ```
+
+---
+
+class:center,middle
+# d3 scales
+
+---
+
+# d3 scales
+
+.center[
+![scale mapping example](assets/d3.scales.example.png)
+]
+
+---
+
+# d3 scales
+
+D3 lets us define mappings between data very easily! For the previous example, our scale would look like so:
+
+```javascript
+var scale = d3.scale.linear()
+  .domain([10,155])
+  .range([0,600]);
+```
+
+Note that this returns a **function**! This is now a helper function we can use to map our values from our domain to our range:
+
+```javascript
+scale(10); // 10
+scale(155); // 600
+scale(82.5); // 300
+```
+
+---
+
+# d3 scales
+
+There are three types of scales in d3:
+
+* Quantitative Scales - for continuous input domains, such as numbers.
+* Ordinal Scales - for discrete input domains, such as names or categories.
+  Often useful for colors:
+
+  ```javascript
+  var color = d3.scale.ordinal()
+    .range(["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
+      "#8c564b", "#e377c2"])
+    .domain(["Asia", "Africa", "North America", "South America", 
+      "Antarctica", "Europe", "Australia"]);
+
+    color("Asia"); //"#1f77b4"
+    color("North America"); //"#2ca02c
+  ```
+* Time Scales - for time domains.
+  Useful for axis labeling:
+
+  ```javascript
+  var xScale = d3.time.scale()
+    .domain([new Date("01/01/2013"), new Date("30/12/2013")])
+    .range([0, 600]);
+  xScale(new Date("06/31/2013")); //296.6346153846154
+  ```
+
+---
+
+class:center,middle
+# Data Joins
+What is a data join?
 
 ---
 
@@ -358,7 +474,7 @@ var updating = binding;
 
 # Example
 
-![circles along an x axis](http://gyazo.com/0a6931da739e1e7b0f9af7bf99a1eac2.png)
+![circles along an x axis](assets/circles.example.png)
 
 ---
 
@@ -502,3 +618,308 @@ function draw(data) {
 You can see the live example here:
 
 http://jsfiddle.net/GGDce/2/
+
+---
+
+class:center,middle
+# d3 Transitions
+
+---
+
+# d3 Transitions
+
+So far we've made *static* changes to our DOM elements, but what if we wanted to *animate* some of those changes? Again, d3 makes this REALLY easy.
+
+Instead of:
+
+```javascript
+d3.select("body").style("color", "red");
+```
+
+You can call: 
+
+```javascript
+d3.select("body").transition().style("color", "red");
+```
+
+Optionally, you can control your transition speed:
+
+```javascript
+d3.select("body").transition().delay(700).style("color", "red");
+```
+
+---
+
+# d3 Transitions
+
+Transitions work on all join selections:
+
+```javascript
+var bar = svg.selectAll(".bar")
+    .data(data, function(d) { return d.key; });
+
+bar.enter().append("rect")
+    .attr("class", "bar")
+    … // initialize entering bars
+
+bar.transition()
+    … // transition entering + updating bars
+
+bar.exit().transition()
+    … // transition exiting bars
+    .remove();
+```
+
+Read more: http://bost.ocks.org/mike/transition/
+
+---
+
+# d3 Transitions
+
+You can see our circle example with an rendering transitions:
+
+http://jsfiddle.net/RGAM5/1/
+
+---
+
+# Even more d3...
+
+We can't possibly cover all aspects of d3 here, but there are some additional elements of it that are incredibly useful:
+
+* _Layouts_ - Layouts basically encapsulate the math required to position our elements according to some graphical layout. 
+
+  For example, a treemap:
+
+  ![treemap](https://github.com/mbostock/d3/wiki/treemap.png)
+
+  https://github.com/mbostock/d3/wiki/Layouts
+
+---
+
+# Even more d3...
+
+* _Working with Arrays_ - d3 has a huge collection of helper methods that help us transform our data so that it can then be visualized. Anything from grouping data, to reducing it, to easily applying transformations to each data element. 
+
+  https://github.com/mbostock/d3/wiki/Arrays
+
+---
+
+# Even more d3...
+
+* _Colors_ - d3 comes with a collection of color transformation methods that easily let us compute color ranges, gradients, lighter/darker colors in RGP, HSL and LAB.
+
+* _Pre-existing components_ - while there aren't many bre-baked components in d3, there is an axis component that is easy to customize.
+
+* _Mapping_ - there are a lot of facilities in d3 to easily create maps of different projections
+
+* _Behaviors_ - supporting zooming/panning/dragging in d3 can be a matter of a few lines of code.
+
+
+---
+
+class:center,middle
+# Code Organization in d3
+Creating reusable d3-based assets
+
+---
+class:center
+![all the maps](assets/choropleths.png)
+
+---
+
+# Code Organization in d3
+
+One thing that is challenging to do in d3.js is organize your code. For example:
+
+http://bl.ocks.org/mbostock/6498580
+
+Some of the challenges of writing our code like this include:
+
+* Reusing elsewhere means copy & pasting
+* Making changes / adding functionality means copy & pasting & changing
+* Fixing mistakes may require manual carrying over across all copy & pasted instances
+* etc...
+
+That's not sustainable.
+
+---
+
+class:middle,center
+# Principals of Reusable Charts
+
+---
+
+# Repeatable
+
+### Easy to create multiple instances of
+
+.paddingless[
+![repeatable](assets/repeatable.png)
+]
+
+---
+# Configurable
+
+### Easy to appropriate for a specific task 
+
+.paddingless[
+![configurable](assets/configurable.png)
+]
+
+---
+
+# Extensible
+
+### Easy to extend with additional functionality
+.paddingless[
+![Extensible](assets/extensible.png)
+]
+
+---
+
+# Composable
+
+### Easy to combine into other charts
+
+.paddingless[
+![Composable](assets/composable.png)
+]
+
+---
+class:center,middle
+
+![Miso Project](assets/miso.logo.png)
+
+http://misoproject.com
+
+---
+
+# d3.chart.js
+
+### Project website (tutorials, examples etc.)
+http://misoproject.com/d3-chart
+
+### Project code on github:
+http://github.com/misoproject/d3.chart
+
+---
+
+# Our circle example:
+
+http://jsfiddle.net/LHW2T/
+
+---
+
+
+```javascript
+// define a repeatable chart
+d3.chart("CircleChart", {
+
+  initialize: function(options) {
+    // ... 
+    this.layer("circles", circleGroup, {
+      dataBind: function(data) {
+        return this.selectAll("circle")
+          .data(data, function(d) { return d; })
+      },
+
+      insert: function() {
+        return this.append("circle")
+      },
+
+      events: {
+        "update:transition": function() {
+          this.delay(500)
+            .style("fill", "lightgreen");
+        },
+
+        "enter": function() {
+          var chart = this.chart();
+          this.attr("r", 0) 
+            .style("fill", "white")
+            .attr("cy", chart.height/2)
+            .attr("cx", function(d) {
+              return chart.xScale(d);
+            });
+        },
+```
+
+---
+
+```javascript
+        "enter:transition": function() {
+          var chart = this.chart();
+          
+          this.style("fill", "green")
+            .attr("r", chart.radius);
+        },
+
+        "exit:transition": function() {
+          var chart = this.chart();
+          this.delay(1000)
+            .attr("r", chart.radius)
+            .style("fill", "lightgrey");
+        }
+      }
+    })
+  },
+
+  transform : function(data) {
+
+    // update the xScale domain once we get data to render
+    this.xScale.domain(d3.extent(data));
+    return data;
+  }
+});
+
+var chart = d3.select("#vis")
+  .chart("CircleChart", {
+    width: 400, 
+    height: 400,
+    radius: 5
+  });
+
+chart.draw([1,3,5,10,11,12,50]);
+chart.draw([1,2,5,11,12,30,51]);
+```
+
+---
+
+# More d3.chart resources
+
+Tutorials:
+
+http://github.com/misoproject/d3.chart/wiki
+
+
+
+Existing Charts:
+
+http://misoproject.com/d3-chart/charts
+
+...And growing!
+
+---
+
+# d3 & External Tools/Libraries
+
+d3 has a pretty wide ecosystem of external contributions. 
+
+External charting libraries:
+
+* NVd3 - http://nvd3.org/
+* C3.js - http://c3js.org/
+* xCharts - http://tenxer.github.io/xcharts/
+* Rickshaw - http://code.shutterstock.com/rickshaw/
+
+---
+class:middle
+## Thanks!
+
+Irene Ros 
+  
+* Email: [irene@bocoup.com](mailto:irene@bocoup.com)
+* Twitter: [@ireneros](http://twitter.com/ireneros)
+* Github: [iros](http://github.com/iros)
+
+Bocoup: http://bocoup.com
